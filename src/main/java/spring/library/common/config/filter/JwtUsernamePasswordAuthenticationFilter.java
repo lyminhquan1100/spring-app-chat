@@ -19,6 +19,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import spring.library.common.config.PropertiesConfiguration;
 import spring.library.common.config.dto.UsernameAndPasswordDto;
+import spring.library.common.config.userdetail.UserDetail;
 import spring.library.common.dto.ResponseEntity;
 
 public class JwtUsernamePasswordAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
@@ -35,7 +36,6 @@ public class JwtUsernamePasswordAuthenticationFilter extends UsernamePasswordAut
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         try {
-            // tạo dao để map dữ liệu vào từ request
             UsernameAndPasswordDto accountDAO = new ObjectMapper().readValue(request.getInputStream(), UsernameAndPasswordDto.class);
 
             Authentication authentication;
@@ -43,16 +43,12 @@ public class JwtUsernamePasswordAuthenticationFilter extends UsernamePasswordAut
             if (accountDAO == null) {
                 authentication = new UsernamePasswordAuthenticationToken("","");
             }
-
-            // tạo token để authenticatinManager xác thực
             else
                 authentication = new UsernamePasswordAuthenticationToken(
                         accountDAO.getUsername(),
                         accountDAO.getPassword()
                 );
 
-            // authenticationManager xác thực sẽ trả về một Authenticaion với authenticate
-            // là true hoặc false tùy vào xác thực thành công không
             Authentication authenticate = authenticationManager.authenticate(authentication);
 
             return authenticate;
@@ -66,9 +62,11 @@ public class JwtUsernamePasswordAuthenticationFilter extends UsernamePasswordAut
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
-        // create token and response client
+        UserDetail userDetail = (UserDetail) authResult.getPrincipal();
+
         String token = Jwts.builder()
-            .setSubject(authResult.getName())
+            .claim("userId", userDetail.getUserId())
+            .claim("username", userDetail.getUsername())
             .claim("authorities", authResult.getAuthorities())
             .setIssuedAt(new Date())
             .setExpiration(java.sql.Date.valueOf(LocalDate.now().plusWeeks(2)))

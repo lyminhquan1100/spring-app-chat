@@ -19,14 +19,9 @@ import spring.library.common.config.filter.TokenVerifierFilter;
 public class Config extends WebSecurityConfigurerAdapter {
   private final boolean isJwtToken = true;
   @Autowired
-  private PropertiesConfiguration propertiesConfiguration;
+  protected PropertiesConfiguration propertiesConfiguration;
   @Autowired
-  private SecretKey secretKey;
-
-  @Override
-  protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-    super.configure(auth);
-  }
+  protected SecretKey secretKey;
 
   @Override
   protected void configure(HttpSecurity http) throws Exception {

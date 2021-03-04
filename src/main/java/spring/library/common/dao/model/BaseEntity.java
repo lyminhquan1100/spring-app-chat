@@ -17,19 +17,19 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Getter
 @NoArgsConstructor
 public abstract class BaseEntity {
-  @Column(name = "create_at",nullable = false,updatable = false)
+  @Column(name = "created_at",nullable = false,updatable = false)
   @CreatedDate
   private ZonedDateTime createdAt;
 
-  @Column(name = "update_at",nullable = false)
+  @Column(name = "updated_at",nullable = false)
   @LastModifiedDate
   private ZonedDateTime updatedAt;
 
-  @Column(name = "create_by", nullable = false)
+  @Column(name = "created_by", nullable = false)
   @CreatedBy
   private Long createdBy;
 
-  @Column(name = "update_by",nullable = false)
+  @Column(name = "updated_by",nullable = false)
   @LastModifiedBy
   private Long updatedBy;
 
