@@ -57,7 +57,7 @@ public class JwtUsernamePasswordAuthenticationFilter extends UsernamePasswordAut
 
             return authenticate;
         } catch (JsonParseException e){
-            System.out.println("error .");
+            System.out.println("error Json Parse");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

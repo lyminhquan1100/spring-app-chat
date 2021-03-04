@@ -1,4 +1,4 @@
-package spring.library.common.config;
+package spring.library.common.config.audit;
 
 import java.util.Optional;
 import org.springframework.data.domain.AuditorAware;
@@ -20,6 +20,6 @@ class SpringSecurityAuditAwareImpl implements AuditorAware<Long> {
 
     UserDetail userPrincipal = (UserDetail) authentication.getPrincipal();
 
-    return Optional.ofNullable(userPrincipal.getUserId());
+    return Optional.ofNullable((long) 1);
   }
 }

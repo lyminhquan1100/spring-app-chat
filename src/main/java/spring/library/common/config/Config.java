@@ -3,6 +3,7 @@ package spring.library.common.config;
 import javax.crypto.SecretKey;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -36,7 +37,10 @@ public class Config extends WebSecurityConfigurerAdapter {
           .addFilter(new JwtUsernamePasswordAuthenticationFilter(authenticationManager(), propertiesConfiguration, secretKey))
           .addFilterAfter(new TokenVerifierFilter(propertiesConfiguration, secretKey), JwtUsernamePasswordAuthenticationFilter.class);
     }
-    http.authorizeRequests().anyRequest().permitAll();
+    http.csrf().disable()
+        .authorizeRequests()
+        .antMatchers(HttpMethod.POST,"/person").permitAll()
+        .anyRequest().permitAll();
 //      for (String str : toArray(propertiesConfiguration.getListPermit())){
 //        http.authorizeRequests()
 //            .antMatchers(str).permitAll();
