@@ -1,11 +1,14 @@
 package spring.library.common.service;
 
+import java.util.Map;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import spring.library.common.dto.BaseDTO;
-import spring.library.common.dto.ResponseEntity;
 
 public interface BaseService<DTO extends BaseDTO> {
-  ResponseEntity<?> search(DTO dto,Integer page,Integer size);
-  ResponseEntity<DTO> create(DTO dto);
-  ResponseEntity<DTO> update(Long id, DTO dto);
-  ResponseEntity<DTO> delete(Long size);
+  Page<DTO> search(DTO dto, Pageable pageable);
+  DTO save(DTO dto);
+  DTO save(Long id,DTO dto);
+  DTO save(Long id, Map<String,Object> map);
+  void delete(Long size);
 }

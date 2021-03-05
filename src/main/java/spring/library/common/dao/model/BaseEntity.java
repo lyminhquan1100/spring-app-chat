@@ -43,4 +43,8 @@ public abstract class BaseEntity {
     this.updatedBy = updatedBy;
     this.updatedAt = updatedAt;
   }
+
+  public abstract void setId(Long id);
+
+  public abstract Long getId();
 }
