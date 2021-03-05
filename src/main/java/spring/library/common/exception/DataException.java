@@ -30,4 +30,11 @@ public class DataException extends BaseException {
       super(3,Message.getMessage("DataException.NotExistData",new Object[]{message}));
     }
   }
+
+  public static class NullOrEmpty extends DataException{
+    public NullOrEmpty(String nameField){
+      super(4,Message.getMessage("DataException.NullOrEmpty",new Object[]{nameField}));
+    }
+  }
+
 }

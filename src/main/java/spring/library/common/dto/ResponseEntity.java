@@ -1,7 +1,6 @@
 package spring.library.common.dto;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
@@ -9,13 +8,13 @@ import lombok.Setter;
 public class ResponseEntity<T> {
   private Integer code;
   private String message;
-  private T data;
-  private Long numberOfElements;
+  private Object data;
+  private Integer numberOfElements;
   private Long totalElements;
 
   public ResponseEntity(){
-    this.numberOfElements = (long)1;
-    totalElements = numberOfElements;
+    this.numberOfElements = 1;
+    totalElements = (long) numberOfElements;
   }
   public ResponseEntity(T data){
     this();
@@ -34,7 +33,7 @@ public class ResponseEntity<T> {
     this.data = data;
   }
 
-  public ResponseEntity(Integer code, String message, T data,Long numberOfElements,Long totalElements) {
+  public ResponseEntity(Integer code, String message, T data,Integer numberOfElements,Long totalElements) {
     this.code = code;
     this.message = message;
     this.data = data;

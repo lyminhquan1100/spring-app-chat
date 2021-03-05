@@ -58,7 +58,7 @@ public abstract class AbstractBaseService<Entity extends BaseEntity,DTO extends 
 
     Entity model = getById(id);
     dto.setId(id);
-    mapToEntity(dto,getEntity());
+    mapToEntity(dto,model);
     model.setId(id);
 
     return save(model,dto);
