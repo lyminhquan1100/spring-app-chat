@@ -16,4 +16,8 @@ public class BaseException extends RuntimeException {
   public BaseException(String message) {
     responseBody = new ResponseEntity<>(400,message,null);
   }
+
+  public BaseException(int code,String messsage){
+    responseBody = new ResponseEntity<>(400,messsage);
+  }
 }

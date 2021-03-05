@@ -17,6 +17,8 @@ public class UserDetail implements UserDetails {
 
   public UserDetail() {authorities = new ArrayList<>();}
 
+  public void addAuthority(String auth){authorities.add(new Authority(auth));}
+
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
     return authorities;

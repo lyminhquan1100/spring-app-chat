@@ -23,6 +23,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 import spring.library.common.config.PropertiesConfiguration;
+import spring.library.common.config.userdetail.UserDetail;
 import spring.library.common.dto.ResponseEntity;
 
 public class TokenVerifierFilter extends OncePerRequestFilter {
@@ -54,7 +55,9 @@ public class TokenVerifierFilter extends OncePerRequestFilter {
                     .parseClaimsJws(token);
 
             Claims body = claimsJws.getBody();
-            String username = body.getSubject();
+            UserDetail userDetail = new UserDetail();
+            userDetail.setUserId( ((Number) body.get("userId")).longValue() );
+            userDetail.setUsername((String) body.get("username"));
 
             List<Map<String, String>> authority = (List<Map<String, String>>) body.get("authorities");
 
@@ -67,7 +70,7 @@ public class TokenVerifierFilter extends OncePerRequestFilter {
             }
 
             Authentication authentication = new UsernamePasswordAuthenticationToken(
-                    username,
+                    userDetail,
                     null,
                     grantetAuth
             );
@@ -94,4 +97,5 @@ public class TokenVerifierFilter extends OncePerRequestFilter {
         response.getWriter().write(entityresponce);
         response.getWriter().flush();
     }
+
 }

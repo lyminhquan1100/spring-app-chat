@@ -1,4 +1,4 @@
-package spring.library.common.config;
+package spring.library.common.config.audit;
 
 import java.time.ZonedDateTime;
 import java.util.Optional;

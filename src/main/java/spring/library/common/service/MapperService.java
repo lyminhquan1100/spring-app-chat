@@ -54,19 +54,24 @@ public abstract class MapperService<Entity extends BaseEntity,DTO extends BaseDT
     return dtoClass;
   }
 
+  public String getName(){
+    return entityClass.getName();
+  }
 
   protected ModelMapper getModelMapper(){
     return modelMapper;
   }
 
-  public void mapToEntity(DTO dto,Entity entity){
-    modelMapper.map(dto,entity);
-  }
   public Entity mapToEntity(DTO dto){
     return getModelMapper().map(dto,getEntityClass());
   }
+  public void mapToEntity(DTO dto,Entity entity){
+    getModelMapper().map(dto,entity);
+  }
   public DTO mapToDTO(Entity entity){
-    DTO dto = modelMapper.map(entity,getDtoClass());
-    return dto;
+    return getModelMapper().map(entity,getDtoClass());
+  }
+  protected void mapToDTO(Entity entity,DTO dto){
+    getModelMapper().map(entity,dto);
   }
 }

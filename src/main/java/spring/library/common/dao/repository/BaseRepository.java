@@ -3,19 +3,26 @@ package spring.library.common.dao.repository;
 import java.util.Optional;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.transaction.annotation.Transactional;
 import spring.library.common.dao.model.BaseEntity;
+import spring.library.common.dto.BaseDTO;
 
 @NoRepositoryBean
-public interface BaseRepository<Entity extends BaseEntity,ID extends Long> extends CrudRepository<Entity,ID> {
+public interface BaseRepository<Entity extends BaseEntity,DTO extends BaseDTO,ID extends Long> extends CrudRepository<Entity,ID> {
   @Override
   @Transactional(readOnly = true)
   @Query("select e from #{#entityName} e where e.id = ?1")
   Optional<Entity> findById(ID id);
+
+  @Transactional(readOnly = true)
+  @Query("select e from #{#entityName} e where e.id = ?1")
+  Page<Entity> search(DTO dto, Pageable pageable);
 
   @Override
   @CacheEvict(allEntries = true)

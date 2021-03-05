@@ -1,4 +1,4 @@
-package spring.library.common.config;
+package spring.library.common.config.audit;
 
 import java.util.Optional;
 import org.springframework.data.domain.AuditorAware;
