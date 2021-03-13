@@ -1,4 +1,4 @@
-package spring.library.common.config;
+package spring.library.common.config.security;
 
 import com.google.common.collect.ImmutableList;
 import javax.crypto.SecretKey;
@@ -45,14 +45,13 @@ public class Config extends WebSecurityConfigurerAdapter {
           .addFilterAfter(new TokenVerifierFilter(propertiesConfiguration, secretKey), JwtUsernamePasswordAuthenticationFilter.class);
     }
     http.csrf().disable()
-        .cors().configurationSource(corsConfigurationSource())
-        .and()
-        .exceptionHandling().accessDeniedHandler(accessDeniedHandle)
-        .and()
-        .exceptionHandling().authenticationEntryPoint(authenticationEntryPointHandle)
-        .and()
+//        .cors().configurationSource(corsConfigurationSource())
+//        .and()
+//        .exceptionHandling().accessDeniedHandler(accessDeniedHandle)
+//        .and()
+//        .exceptionHandling().authenticationEntryPoint(authenticationEntryPointHandle)
+//        .and()
         .authorizeRequests()
-        .antMatchers(HttpMethod.POST,"/person").permitAll()
         .anyRequest().permitAll();
 //      for (String str : toArray(propertiesConfiguration.getListPermit())){
 //        http.authorizeRequests()

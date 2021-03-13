@@ -6,6 +6,7 @@ import javax.persistence.EntityListeners;
 import javax.persistence.MappedSuperclass;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -36,12 +37,16 @@ public abstract class BaseEntity {
   @Column(name = "deleted",nullable = false)
   private Short deleted = 0;
 
-  public void setAuditProperties(Long createdBy, ZonedDateTime createdAt, Long updatedBy,
-      ZonedDateTime updatedAt) {
+  public void setAuditProperties(ZonedDateTime createdAt,Long createdBy,
+      ZonedDateTime updatedAt, Long updatedBy) {
     this.createdBy = createdBy;
     this.createdAt = createdAt;
     this.updatedBy = updatedBy;
     this.updatedAt = updatedAt;
+  }
+  public void setAuditProperties(ZonedDateTime createdAt,ZonedDateTime updatedAt) {
+    this.createdBy = createdBy;
+    this.createdAt = createdAt;
   }
 
   public abstract void setId(Long id);

@@ -1,4 +1,4 @@
-package spring.library.common.config;
+package spring.library.common.config.security;
 
 import io.jsonwebtoken.security.Keys;
 import javax.crypto.SecretKey;

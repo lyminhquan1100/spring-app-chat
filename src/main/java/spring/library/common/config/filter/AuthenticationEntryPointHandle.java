@@ -11,7 +11,7 @@ import spring.library.common.dto.ResponseEntity;
 import spring.library.common.msg.Message;
 
 @Component
-public final class AuthenticationEntryPointImpl implements
+public final class AuthenticationEntryPointHandle implements
     AuthenticationEntryPoint {
 
   @Override

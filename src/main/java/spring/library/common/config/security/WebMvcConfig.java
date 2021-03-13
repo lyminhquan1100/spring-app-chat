@@ -1,4 +1,4 @@
-package spring.library.common.config;
+package spring.library.common.config.security;
 
 import java.util.Locale;
 import javax.servlet.http.HttpServletRequest;

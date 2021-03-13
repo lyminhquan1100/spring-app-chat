@@ -20,11 +20,11 @@ public class BaseDTO {
 
   @JsonInclude(Include.NON_NULL)
   @ApiModelProperty(hidden = true)
-  private ZonedDateTime createdAt;
+  private String createdAt;
 
   @JsonInclude(Include.NON_NULL)
   @ApiModelProperty(hidden = true)
-  private ZonedDateTime updatedAt;
+  private String updatedAt;
 
   @JsonInclude(Include.NON_NULL)
   @ApiModelProperty(hidden = true)

@@ -16,13 +16,14 @@ import spring.library.common.dto.BaseDTO;
 import spring.library.common.dto.ResponseEntity;
 import spring.library.common.service.BaseService;
 
-public abstract class BaseController<DTO extends BaseDTO, Service extends BaseService<DTO>> {
+public abstract class BaseController<DTO extends BaseDTO, Service extends BaseService<DTO>> extends
+BaseResponseController{
 
   public abstract Service getService();
 
   @GetMapping
   public ResponseEntity<?> search(DTO dto,
-      @PageableDefault(size = 200, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+      @PageableDefault(size = 20, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
     return response(getService().search(dto,pageable));
   }
 
@@ -40,17 +41,5 @@ public abstract class BaseController<DTO extends BaseDTO, Service extends BaseSe
   public ResponseEntity<?> delete(@PathVariable Long id){
     getService().delete(id);
     return response(null);
-  }
-
-  protected ResponseEntity<?> response(Object data) {
-    ResponseEntity<?> responseBody = new ResponseEntity<>(data);
-
-    if (data instanceof Page) {
-      Page<?> page = CastUtils.cast(data);
-      responseBody.setTotalElements(page.getTotalElements());
-      responseBody.setNumberOfElements(page.getNumberOfElements());
-      responseBody.setData(page.getContent());
-    }
-    return responseBody;
   }
 }

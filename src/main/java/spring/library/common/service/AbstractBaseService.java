@@ -9,6 +9,7 @@ import spring.library.common.dao.model.BaseEntity;
 import spring.library.common.dao.repository.BaseRepository;
 import spring.library.common.dto.BaseDTO;
 import spring.library.common.exception.DataException;
+import spring.library.common.map.MapperService;
 
 @Transactional
 public abstract class AbstractBaseService<Entity extends BaseEntity,DTO extends BaseDTO,

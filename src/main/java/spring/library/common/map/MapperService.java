@@ -1,13 +1,19 @@
-package spring.library.common.service;
+package spring.library.common.map;
+
+import static spring.library.common.utils.DateUtils.*;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.util.CastUtils;
-import org.springframework.stereotype.Repository;
 import spring.library.common.dao.model.BaseEntity;
 import spring.library.common.dto.BaseDTO;
 import spring.library.common.exception.BaseException;
+import spring.library.common.utils.DateUtils;
 
 public abstract class MapperService<Entity extends BaseEntity,DTO extends BaseDTO> {
   private final Class<Entity> entityClass;
@@ -63,15 +69,32 @@ public abstract class MapperService<Entity extends BaseEntity,DTO extends BaseDT
   }
 
   public Entity mapToEntity(DTO dto){
-    return getModelMapper().map(dto,getEntityClass());
+    Entity entity = getModelMapper().map(dto,getEntityClass());
+    specificMapToEntity(dto,entity);
+    return entity;
   }
   public void mapToEntity(DTO dto,Entity entity){
     getModelMapper().map(dto,entity);
+    specificMapToEntity(dto, entity);
   }
   public DTO mapToDTO(Entity entity){
-    return getModelMapper().map(entity,getDtoClass());
+    DTO dto = getModelMapper().map(entity,getDtoClass());
+    specificMapToDTO(entity,dto);
+    return dto;
   }
   protected void mapToDTO(Entity entity,DTO dto){
     getModelMapper().map(entity,dto);
+    specificMapToDTO(entity,dto);
   }
+
+  protected void specificMapToDTO(Entity entity,DTO dto){
+    dto.setCreatedAt(convertLocalDateTimeToString(entity.getCreatedAt(),"yyyy-MM-dd HH:mm:ss"));
+    dto.setUpdatedAt(convertLocalDateTimeToString(entity.getUpdatedAt(),"yyyy-MM-dd HH:mm:ss"));
+  }
+  protected void specificMapToEntity(DTO dto,Entity entity){
+//    entity.setAuditProperties(
+//        convertStringToLocalDate(dto.getCreatedAt(), "yyyy-MM-dd HH:mm:ss z"),
+//        convertStringToLocalDate(dto.getUpdatedAt(),"yyyy-MM-dd HH:mm:ss z"));
+  }
+
 }

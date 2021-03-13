@@ -11,14 +11,16 @@ import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import spring.library.common.config.PropertiesConfiguration;
+import spring.library.common.config.security.PropertiesConfiguration;
 import spring.library.common.config.dto.UsernameAndPasswordDto;
+import spring.library.common.config.security.TokenProvider;
 import spring.library.common.config.userdetail.UserDetail;
 import spring.library.common.dto.ResponseEntity;
 
@@ -26,6 +28,8 @@ public class JwtUsernamePasswordAuthenticationFilter extends UsernamePasswordAut
     private final AuthenticationManager authenticationManager;
     private final PropertiesConfiguration propertiesConfiguration;
     private final SecretKey secretKey;
+    @Autowired
+    private TokenProvider tokenProvider;
 
     public JwtUsernamePasswordAuthenticationFilter(AuthenticationManager authenticationManager, PropertiesConfiguration propertiesConfiguration, SecretKey secretKey) {
         this.authenticationManager = authenticationManager;
@@ -64,14 +68,7 @@ public class JwtUsernamePasswordAuthenticationFilter extends UsernamePasswordAut
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         UserDetail userDetail = (UserDetail) authResult.getPrincipal();
 
-        String token = Jwts.builder()
-            .claim("userId", userDetail.getUserId())
-            .claim("username", userDetail.getUsername())
-            .claim("authorities", authResult.getAuthorities())
-            .setIssuedAt(new Date())
-            .setExpiration(java.sql.Date.valueOf(LocalDate.now().plusWeeks(2)))
-            .signWith(secretKey)
-            .compact();
+        String token = tokenProvider.generateToken(userDetail);
 
         response.addHeader(propertiesConfiguration.getAuthorizationHeader(),token);
 

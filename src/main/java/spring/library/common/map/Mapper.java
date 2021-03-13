@@ -1,4 +1,4 @@
-package spring.library.common.service;
+package spring.library.common.map;
 
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
