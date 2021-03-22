@@ -52,7 +52,13 @@ public class Config extends WebSecurityConfigurerAdapter {
 //        .exceptionHandling().authenticationEntryPoint(authenticationEntryPointHandle)
 //        .and()
         .authorizeRequests()
-        .anyRequest().permitAll();
+        .anyRequest().permitAll()
+    .and()
+    .exceptionHandling()
+    .accessDeniedHandler(accessDeniedHandle)
+    .authenticationEntryPoint(authenticationEntryPointHandle);
+    ;
+
 //      for (String str : toArray(propertiesConfiguration.getListPermit())){
 //        http.authorizeRequests()
 //            .antMatchers(str).permitAll();

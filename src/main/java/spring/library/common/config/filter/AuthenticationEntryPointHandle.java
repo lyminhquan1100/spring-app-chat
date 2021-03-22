@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
+import spring.library.common.constant.ErrorEnum;
 import spring.library.common.dto.ResponseEntity;
 import spring.library.common.msg.Message;
 
@@ -18,7 +19,7 @@ public final class AuthenticationEntryPointHandle implements
   public void commence(HttpServletRequest request,
       HttpServletResponse httpServletResponse, AuthenticationException e)
       throws IOException, ServletException {
-    ResponseEntity<?> response = new ResponseEntity<>(401,
-        Message.getMessage("AuthenticationEntryPointImpl.invalidToken"));
+    ResponseEntity<?> response = new ResponseEntity<>(ErrorEnum.FORBIDDEN.getCode(),
+        Message.getMessage(ErrorEnum.FORBIDDEN.getMessage()));
   }
 }
