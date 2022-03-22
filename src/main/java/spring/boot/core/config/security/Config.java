@@ -56,10 +56,10 @@ public class Config extends WebSecurityConfigurerAdapter {
         .exceptionHandling().authenticationEntryPoint(authenticationEntryPointHandle)
         .and()
         .authorizeRequests()
-        .antMatchers(HttpMethod.PUT,unauthorization).permitAll()
-        .antMatchers(HttpMethod.POST,unauthorization).permitAll()
-        .antMatchers(HttpMethod.GET,unauthorization).permitAll()
-        .anyRequest().authenticated();
+//        .antMatchers(HttpMethod.PUT,unauthorization).permitAll()
+//        .antMatchers(HttpMethod.POST,unauthorization).permitAll()
+//        .antMatchers(HttpMethod.GET,unauthorization).permitAll()
+        .anyRequest().permitAll();
 
   }
 

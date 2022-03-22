@@ -23,10 +23,24 @@ public class RoomEntity extends BaseEntity {
 
     private Boolean active;
 
+    @Column(name = "admin_id")
+    private Long adminId;
+
+    @Column(name = "last_message_id")
+    private Long lastMessageId;
+
+//    @OneToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "last_message_id",updatable = false,insertable = false)
+//    private MessageEntity lastMessage;
+
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "admin_id", insertable = false, updatable = false)
+//    private AccountEntity admin;
+
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(
-            name = "team_user",
-            joinColumns = @JoinColumn(name = "team_id", referencedColumnName = "id"),
+            name = "room_user",
+            joinColumns = @JoinColumn(name = "room_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
     private List<AccountEntity> connectedUsers;
 

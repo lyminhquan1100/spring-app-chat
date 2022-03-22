@@ -11,14 +11,29 @@ import spring.boot.module.chat.entity.RoomEntity;
 import java.util.List;
 
 @Repository
-public interface RoomRepository extends BaseRepository<RoomEntity, RoomDTO,Long> {
-    @Override
-    @Query("select e from RoomEntity e" +
-            " where (e.idRes = :#{#dto.idRes} or :#{#dto.idRes} is null)" +
-            " and (exists(select u from e.connectedUsers u" +
-            "                   where u.id = :#{#dto.userId})" +
-            "       or :#{#dto.userId} = e.idLeader or :#{#dto.userId} is null)")
-    Page<RoomEntity> search(RoomDTO dto, Pageable pageable);
+public interface RoomRepository extends BaseRepository<RoomEntity, RoomDTO, Long> {
+//    @Override
+//    @Query("select e from RoomEntity e" +
+//            " where 1=1" +
+//            " and (exists(select u from e.connectedUsers u" +
+//            "                   where u.id = :#{#dto.userId})" +
+//            "       or :#{#dto.userId} = e.idLeader or :#{#dto.userId} is null)")
+//    Page<RoomEntity> search(RoomDTO dto, Pageable pageable);
 
-    List<RoomEntity> findByIdRes(Long idRes);
+    @Query("select e from RoomEntity e" +
+            " where 1=1" +
+            " and (exists(select u from e.connectedUsers u" +
+            "                   where u.id = :#{#userId})" +
+            "       or :#{#userId} = e.adminId or :#{#userId} is null)" +
+            " order by e.updatedAt ASC")
+    List<RoomEntity> listRoomByUserId(Long userId);
+
+
+//    @Query("select e.id from AccountEntity e" +
+//            " join e.id" +
+//            " where 1=1" +
+//            " and (exists(select u from e.connectedUsers u" +
+//            "                   where u.id = :#{#userId})" +
+//            "       or :#{#userId} = e.adminId or :#{#userId} is null)")
+//    List<Long> listConnectUserId(Long roomId);
 }

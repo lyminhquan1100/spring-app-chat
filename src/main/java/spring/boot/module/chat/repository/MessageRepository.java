@@ -15,7 +15,7 @@ public interface MessageRepository extends BaseRepository<MessageEntity, Message
     @Override
     @Query("select e from MessageEntity e" +
             " where (lower(e.content) like %:#{#dto.content}% or :#{#dto.content} is null)" +
-            " and (e.toUser = :#{#dto.toUser} or :#{#dto.toUser} is null) " +
+//            " and (e.toUser = :#{#dto.toUser} or :#{#dto.toUser} is null) " +
             " and (e.roomId = :#{#dto.roomId} or :#{#dto.roomId} is null) " +
             " and (e.createdBy = :#{#dto.createdBy} or :#{#dto.createdBy} is null) ")
     Page<MessageEntity> search(MessageDTO dto, Pageable pageable);

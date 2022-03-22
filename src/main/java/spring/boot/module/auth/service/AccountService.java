@@ -17,4 +17,8 @@ public interface AccountService extends BaseService<AccountDTO> {
     Long getCurrentUserId();
 
     AccountEntity mapToEntity(AccountDTO accountDTO);
+
+    AccountDTO mapToDTO(AccountEntity accountEntity);
+
+    AccountDTO changeAvatar(AccountDTO accountDTO);
 }

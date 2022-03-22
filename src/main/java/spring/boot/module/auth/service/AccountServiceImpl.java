@@ -114,4 +114,14 @@ public class AccountServiceImpl extends AbstractBaseService<AccountEntity, Accou
         UserPrincipal userDetail = (UserPrincipal) authentication.getPrincipal();
         return userDetail.getId();
     }
+
+    @Override
+    public AccountDTO changeAvatar(AccountDTO accountDTO) {
+        AccountEntity accountEntity = getRepository().findById(getCurrentUserId()).orElse(null);
+        if(accountEntity != null){
+            accountEntity.setAvatar(accountDTO.getAvatar());
+            save(accountEntity, accountDTO);
+        }
+        return accountDTO;
+    }
 }

@@ -21,6 +21,16 @@ public class RoomDTO extends BaseDTO {
 
     private List<AccountDTO> connectedUsers;
 
+    private Long adminId;
+
+    private Long lastMessageId;
+
+    private Object lastMessage;
+
+    private String avatar;
+
+    private Object admin;
+
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Long userId;
 

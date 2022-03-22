@@ -5,11 +5,14 @@ import spring.boot.module.auth.dto.AccountDTO;
 import spring.boot.module.chat.dto.MessageDTO;
 import spring.boot.module.chat.dto.RoomDTO;
 
+import java.util.Map;
+
 public interface RoomService extends BaseService<RoomDTO> {
-    RoomDTO join(AccountDTO joiningUser, RoomDTO chatRoom);
-    RoomDTO leave(AccountDTO leavingUser, RoomDTO chatRoom);
-
-    void sendPublicMessage(MessageDTO dto);
-
-    void sendPrivateMessage(MessageDTO dto);
+    RoomDTO join(Long userId, Long roomId);
+    RoomDTO leave(Long userId, Long roomId);
+    void sendMessage(MessageDTO roomDTO);
+    void sendMessage(Long roomId,String type,Object payload);
+    void subscribe(Map<String,Object> data);
+    void subscribe(Long data);
+    void listRoom(Long userID);
 }

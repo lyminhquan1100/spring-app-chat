@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import spring.boot.core.dto.BaseDTO;
 
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -14,9 +16,9 @@ import spring.boot.core.dto.BaseDTO;
 public class MessageDTO extends BaseDTO {
     private Long id;
 
-    private Long roomId;
+    private Long fromId;
 
-    private Long toUser;
+    private Long roomId;
 
     private String content;
 
@@ -24,7 +26,5 @@ public class MessageDTO extends BaseDTO {
 
     private String avatar;
 
-    public boolean isPublic() {
-        return this.toUser == null;
-    }
+    private List<LastSeenDTO> listLastSeen;
 }

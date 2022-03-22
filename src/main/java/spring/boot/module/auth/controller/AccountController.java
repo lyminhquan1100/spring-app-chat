@@ -29,4 +29,9 @@ public class AccountController extends BaseController<AccountDTO, AccountService
     public ResponseDTO login(@RequestBody UsernameAndPasswordDTO usernameAndPasswordDTO) {
         return response(getService().login(usernameAndPasswordDTO));
     }
+
+    @PutMapping("/avatar")
+    public ResponseDTO avatar(@RequestBody AccountDTO accountDTO) {
+        return response(getService().changeAvatar(accountDTO));
+    }
 }

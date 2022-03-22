@@ -1,36 +1,35 @@
 package spring.boot.module.chat.config;
 
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
-import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.session.ExpiringSession;
-import org.springframework.session.web.socket.config.annotation.AbstractSessionWebSocketMessageBrokerConfigurer;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
+import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
+@CrossOrigin
 @Configuration
-@EnableScheduling
 @EnableWebSocketMessageBroker
-public class WebSocketConfig extends AbstractSessionWebSocketMessageBrokerConfigurer<ExpiringSession> {
+public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
-    @Value("${ebook.chat.relay.host}")
-    private String relayHost;
+    @Autowired
+    private HttpHandshakeInterceptor handshakeInterceptor;
 
-    @Value("${ebook.chat.relay.port}")
-    private Integer relayPort;
-
-    protected void configureStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/ws").withSockJS();
+    @Override
+    public void registerStompEndpoints(StompEndpointRegistry registry) {
+        registry.addEndpoint("/ws")
+                .setAllowedOrigins("http://localhost:3000",
+                        "http://localhost:3001",
+                        "http://45.13.132.247:1234")
+                .withSockJS()
+                .setInterceptors(handshakeInterceptor);
     }
 
+    @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
-        registry.enableStompBrokerRelay("/queue/", "/topic/")
-                .setUserDestinationBroadcast("/topic/unresolved.user.dest")
-                .setUserRegistryBroadcast("/topic/registry.broadcast")
-                .setRelayHost(relayHost)
-                .setRelayPort(relayPort);
-
-        registry.setApplicationDestinationPrefixes("/chatroom");
+        registry.setApplicationDestinationPrefixes("/app");
+        registry.enableSimpleBroker("/broker");
     }
+
 }
