@@ -1,17 +1,15 @@
 package spring.boot.module.chat.repository;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-import spring.boot.core.dao.repository.BaseRepository;
+import spring.boot.core.api.CoreRepository;
 import spring.boot.module.chat.dto.RoomDTO;
 import spring.boot.module.chat.entity.RoomEntity;
 
 import java.util.List;
 
 @Repository
-public interface RoomRepository extends BaseRepository<RoomEntity, RoomDTO, Long> {
+public interface RoomRepository extends CoreRepository<RoomDTO,RoomEntity> {
 //    @Override
 //    @Query("select e from RoomEntity e" +
 //            " where 1=1" +

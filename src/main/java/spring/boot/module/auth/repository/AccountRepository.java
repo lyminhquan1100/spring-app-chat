@@ -4,12 +4,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-import spring.boot.core.dao.repository.BaseRepository;
+import spring.boot.core.api.CoreRepository;
 import spring.boot.module.auth.dto.AccountDTO;
 import spring.boot.module.auth.entity.AccountEntity;
 
 @Repository
-public interface AccountRepository extends BaseRepository<AccountEntity, AccountDTO, Long> {
+public interface AccountRepository extends CoreRepository<AccountDTO, AccountEntity> {
 
     @Override
     @Query("select e from AccountEntity e" +

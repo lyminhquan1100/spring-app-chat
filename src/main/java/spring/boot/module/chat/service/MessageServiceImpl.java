@@ -2,41 +2,36 @@ package spring.boot.module.chat.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import spring.boot.core.service.AbstractBaseService;
+import spring.boot.core.api.CoreServiceImpl;
+import spring.boot.core.exception.BaseException;
 import spring.boot.module.auth.entity.AccountEntity;
 import spring.boot.module.auth.repository.AccountRepository;
-import spring.boot.module.auth.service.AccountService;
 import spring.boot.module.chat.dto.MessageDTO;
 import spring.boot.module.chat.entity.MessageEntity;
-import spring.boot.module.chat.repository.MessageRepository;
-
-import java.util.List;
-import java.util.stream.Collectors;
+import spring.boot.module.chat.entity.RoomEntity;
+import spring.boot.module.chat.enums.PackEnum;
+import spring.boot.module.chat.repository.RoomRepository;
 
 @Service
 public class MessageServiceImpl
-        extends AbstractBaseService<MessageEntity, MessageDTO, MessageRepository>
+        extends CoreServiceImpl<MessageDTO, MessageEntity>
         implements MessageService {
-    @Autowired
-    private MessageRepository messageRepository;
 
     @Autowired
     private AccountRepository accountRepository;
 
-    @Override
-    protected MessageRepository getRepository() {
-        return messageRepository;
-    }
+    @Autowired
+    private RoomRepository roomRepository;
+
+    @Autowired
+    private RoomService roomService;
+
+    @Autowired
+    private PackService packService;
 
     @Override
-    public List<MessageDTO> findByUserIdAndRoomId(Long userId, Long roomId) {
-        return messageRepository.findAllByCreatedByAndRoomId(userId, roomId)
-                .stream().map(this::mapToDTO).collect(Collectors.toList());
-    }
-
-    @Override
-    protected void specificMapToDTO(MessageEntity entity, MessageDTO dto) {
-        super.specificMapToDTO(entity, dto);
+    public MessageDTO mapToDTO(MessageEntity entity) {
+        MessageDTO dto = super.mapToDTO(entity);
         if (entity.getFromUser() != null) {
             dto.setFullName(entity.getFromUser().getFullName());
             dto.setAvatar(entity.getFromUser().getAvatar());
@@ -47,5 +42,17 @@ public class MessageServiceImpl
                 dto.setAvatar(accountEntity.getAvatar());
             }
         }
+        return dto;
+    }
+
+    @Override
+    public void sendMessage(MessageDTO messageDTO) {
+        RoomEntity roomEntity = roomService.getById(messageDTO.getId());
+        save(messageDTO);
+
+        roomEntity.setLastMessageId(messageDTO.getId());
+        roomService.save(roomEntity);
+
+        packService.sendToRoom(roomEntity, PackEnum.CHAT, messageDTO);
     }
 }

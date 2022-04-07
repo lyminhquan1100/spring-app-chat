@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Where;
-import spring.boot.core.dao.model.BaseEntity;
+import spring.boot.core.api.CoreEntity;
 import spring.boot.module.auth.entity.AccountEntity;
 
 import javax.persistence.*;
@@ -16,7 +16,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class MessageEntity extends BaseEntity {
+public class MessageEntity extends CoreEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -26,7 +26,10 @@ public class MessageEntity extends BaseEntity {
 
 //    private Long toUser;
 
+    @Column(length = 1000)
     private String content;
+
+    private Short type;
 
     private Long roomId;
 
@@ -37,4 +40,7 @@ public class MessageEntity extends BaseEntity {
     @OneToMany(mappedBy = "messageEntity")
 //    @JoinColumn(name = "from_id",insertable = false,updatable = false)
     private List<LastSeenEntity> listLastSeen;
+
+    @OneToMany(mappedBy = "messageEntity")
+    private List<EmojiEntity> listEmoji;
 }

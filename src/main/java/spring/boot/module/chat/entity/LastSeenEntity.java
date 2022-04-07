@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Where;
-import spring.boot.core.dao.model.BaseEntity;
+import spring.boot.core.api.CoreEntity;
 import spring.boot.module.auth.entity.AccountEntity;
 
 import javax.persistence.*;
@@ -15,7 +15,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @NoArgsConstructor
-public class LastSeenEntity extends BaseEntity {
+public class LastSeenEntity extends CoreEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

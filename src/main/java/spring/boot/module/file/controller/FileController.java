@@ -6,8 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import spring.boot.core.controller.BaseResponseController;
-import spring.boot.core.dto.ResponseDTO;
+import spring.boot.core.api.ResponseController;
+import spring.boot.core.api.ResponseDTO;
 import spring.boot.module.file.service.FileService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,7 +16,7 @@ import java.io.IOException;
 @RestController
 @RequestMapping(path = "/file")
 @RequiredArgsConstructor
-public class FileController extends BaseResponseController {
+public class FileController extends ResponseController {
 
     @Getter(AccessLevel.PROTECTED)
     private final FileService service;

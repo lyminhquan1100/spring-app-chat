@@ -4,14 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import spring.boot.core.dto.BaseDTO;
+import spring.boot.core.api.CoreDTO;
 import spring.boot.module.auth.dto.AccountDTO;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class LastSeenDTO extends BaseDTO {
+public class LastSeenDTO extends CoreDTO {
     private Long id;
 
     private Long userId;

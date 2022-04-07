@@ -2,36 +2,37 @@ package spring.boot.module.auth.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import spring.boot.core.config.dto.UsernameAndPasswordDTO;
-import spring.boot.core.controller.BaseController;
-import spring.boot.core.dto.ResponseDTO;
+import org.springframework.web.multipart.MultipartFile;
+import spring.boot.core.security.dto.UsernameAndPasswordDTO;
+import spring.boot.core.api.CoreController;
+import spring.boot.core.api.ResponseDTO;
 import spring.boot.module.auth.dto.AccountDTO;
+import spring.boot.module.auth.dto.LoginDTO;
+import spring.boot.module.auth.entity.AccountEntity;
 import spring.boot.module.auth.service.AccountService;
+
+import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/account")
 @CrossOrigin
-public class AccountController extends BaseController<AccountDTO, AccountService> {
+public class AccountController extends CoreController<AccountDTO, AccountEntity> {
+
     @Autowired
     private AccountService service;
 
-    @Override
-    public AccountService getService() {
-        return service;
-    }
-
     @PostMapping("/register")
     public ResponseDTO register(@RequestBody AccountDTO accountDTO) {
-        return response(getService().register(accountDTO));
+        return response(service.register(accountDTO));
     }
 
     @PostMapping("/login")
-    public ResponseDTO login(@RequestBody UsernameAndPasswordDTO usernameAndPasswordDTO) {
-        return response(getService().login(usernameAndPasswordDTO));
+    public ResponseDTO login(@RequestBody LoginDTO loginDTO, HttpServletRequest httpServletRequest) {
+        return response(service.login(loginDTO));
     }
 
     @PutMapping("/avatar")
-    public ResponseDTO avatar(@RequestBody AccountDTO accountDTO) {
-        return response(getService().changeAvatar(accountDTO));
+    public ResponseDTO avatar(@RequestParam("file") MultipartFile file) {
+        return response(service.changeAvatar(file));
     }
 }

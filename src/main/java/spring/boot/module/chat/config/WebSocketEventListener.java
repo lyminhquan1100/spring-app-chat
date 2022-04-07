@@ -4,53 +4,50 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
+import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.GenericMessage;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
+import spring.boot.core.security.filter.JwtProvider;
+import spring.boot.core.security.userdetail.UserPrincipal;
+import spring.boot.module.auth.service.DeviceInfoService;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 @Component
 public class WebSocketEventListener {
-
     private static final Logger logger = LoggerFactory.getLogger(WebSocketEventListener.class);
 
     @Autowired
-    private SimpMessageSendingOperations messagingTemplate;
+    private JwtProvider jwtProvider;
+
+    @Autowired
+    private DeviceInfoService deviceInfoService;
 
     @EventListener
     public void handleWebSocketConnectListener(SessionConnectedEvent event) {
-//        StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
-        SimpMessageHeaderAccessor headers = SimpMessageHeaderAccessor.wrap(event.getMessage());
-        MessageHeaders messageHeaders = headers.getMessageHeaders();
-        GenericMessage simpConnect = messageHeaders.get("simpConnectMessage", GenericMessage.class);
-        Map<String, String> headerReq = simpConnect.getHeaders().get("nativeHeaders", Map.class);
+        SimpMessageHeaderAccessor headerSimp = SimpMessageHeaderAccessor.wrap(event.getMessage());
+        SimpMessageHeaderAccessor headers = SimpMessageHeaderAccessor.wrap(
+                headerSimp.getMessageHeaders().get("simpConnectMessage", Message.class));
 
-        Object userId = headerReq.get("userId");
+        String token = headers.getNativeHeader("token").get(0);
+        Authentication authentication = jwtProvider.getAuthentication(token);
+        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
 
-//        if (userId != null) {
-////            headers.getMessageHeaders().im
-////            headers.getUser();
-////            headers.getMessageHeaders().put("userId" , userId);
-//            if(headers.getSessionAttributes() != null){
-//                headers.getSessionAttributes().put("userId", userId);
-//            }else{
-//                Map<String,Object> mapSession = new HashMap<String,Object>() {{
-//                    put("userId",userId);
-//                }};
-////                Map mapSession = Collections.singletonMap("userId", userId);
-//                headers.setImmutable();
-//                headers.setSessionAttributes(mapSession);
-//            }
-//        }
+        deviceInfoService.checkLogoutDevice(userPrincipal.getDeviceInfoId());
 
-//        String chatRoomId = headers.getNativeHeader("userId").get(0);
+        if (headers.getSessionAttributes() != null) {
+            headers.getSessionAttributes().put("userId", userPrincipal.getId());
+            headers.getSessionAttributes().put("deviceInfoId", userPrincipal.getDeviceInfoId());
+        }
         logger.info("Received a new web socket connection");
     }
 

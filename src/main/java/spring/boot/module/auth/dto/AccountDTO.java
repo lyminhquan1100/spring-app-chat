@@ -4,13 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import spring.boot.core.dto.BaseDTO;
+import spring.boot.core.api.CoreDTO;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AccountDTO extends BaseDTO {
+public class AccountDTO extends CoreDTO {
     private Long id;
 
     private String username;

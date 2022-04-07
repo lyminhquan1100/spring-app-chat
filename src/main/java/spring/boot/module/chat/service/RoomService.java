@@ -1,18 +1,14 @@
 package spring.boot.module.chat.service;
 
-import spring.boot.core.service.BaseService;
-import spring.boot.module.auth.dto.AccountDTO;
+import spring.boot.core.api.CoreService;
 import spring.boot.module.chat.dto.MessageDTO;
 import spring.boot.module.chat.dto.RoomDTO;
+import spring.boot.module.chat.entity.RoomEntity;
 
 import java.util.Map;
 
-public interface RoomService extends BaseService<RoomDTO> {
+public interface RoomService extends CoreService<RoomDTO, RoomEntity> {
     RoomDTO join(Long userId, Long roomId);
     RoomDTO leave(Long userId, Long roomId);
-    void sendMessage(MessageDTO roomDTO);
-    void sendMessage(Long roomId,String type,Object payload);
-    void subscribe(Map<String,Object> data);
-    void subscribe(Long data);
     void listRoom(Long userID);
 }

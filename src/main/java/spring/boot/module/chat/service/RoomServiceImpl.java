@@ -3,15 +3,16 @@ package spring.boot.module.chat.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
+import spring.boot.core.api.CoreServiceImpl;
 import spring.boot.core.exception.BaseException;
-import spring.boot.core.service.AbstractBaseService;
 import spring.boot.module.auth.entity.AccountEntity;
 import spring.boot.module.auth.repository.AccountRepository;
 import spring.boot.module.auth.service.AccountService;
 import spring.boot.module.chat.dto.MessageDTO;
 import spring.boot.module.chat.dto.RoomDTO;
-import spring.boot.module.chat.entity.LastSeenEntity;
+import spring.boot.module.chat.entity.MessageEntity;
 import spring.boot.module.chat.entity.RoomEntity;
+import spring.boot.module.chat.enums.PackEnum;
 import spring.boot.module.chat.repository.LastSeenRepository;
 import spring.boot.module.chat.repository.MessageRepository;
 import spring.boot.module.chat.repository.RoomRepository;
@@ -23,10 +24,14 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
-public class RoomServiceImpl extends AbstractBaseService<RoomEntity, RoomDTO, RoomRepository> implements RoomService {
+public class RoomServiceImpl extends CoreServiceImpl<RoomDTO, RoomEntity>
+        implements RoomService {
 
     @Autowired
     private SimpMessagingTemplate simpMessagingTemplate;
+
+    @Autowired
+    private PackService packService;
 
     @Autowired
     private RoomRepository roomRepository;
@@ -45,11 +50,6 @@ public class RoomServiceImpl extends AbstractBaseService<RoomEntity, RoomDTO, Ro
 
     @Autowired
     private MessageService messageService;
-
-    @Override
-    protected RoomRepository getRepository() {
-        return roomRepository;
-    }
 
     @Override
     protected void beforeSave(RoomEntity entity, RoomDTO dto) {
@@ -108,109 +108,37 @@ public class RoomServiceImpl extends AbstractBaseService<RoomEntity, RoomDTO, Ro
         return joinOrLeave(userId, roomId, false);
     }
 
-    @Override
-    public void sendMessage(MessageDTO messageDTO) {
-        if (messageDTO.getRoomId() == null) {
-            throw new BaseException("Chưa nhập roomId");
-        }
-        RoomEntity roomEntity = getRepository()
-                .findById(messageDTO.getRoomId()).orElse(null);
-        if (roomEntity != null) {
-            messageService.save(messageDTO);
-            RoomDTO roomDTO = findById(messageDTO.getRoomId());
-            if (roomDTO == null) {
-                throw new BaseException("Room không tồn tại");
-            }
-            roomDTO.setLastMessageId(messageDTO.getId());
-            save(roomDTO);
-
-            simpMessagingTemplate.convertAndSend(
-                    Destinations.userMessage(roomEntity.getAdminId()),
-                    Destinations.sendData("chat", messageDTO));
-            List<AccountEntity> listUser = roomEntity.getConnectedUsers();
-            if (listUser != null) {
-                for (int i = 0; i < listUser.size(); i++) {
-                    simpMessagingTemplate.convertAndSend(
-                            Destinations.userMessage(listUser.get(i).getId()),
-                            Destinations.sendData("chat", messageDTO));
-                }
-            }
-        }
-    }
-
-    @Override
-    public void sendMessage(Long roomId, String type, Object payload) {
-        assert roomId != null;
-        RoomEntity roomEntity = getRepository().findById(roomId).orElse(null);
-        if (roomEntity != null) {
-            RoomDTO roomDTO = findById(roomId);
-            if (roomDTO == null) {
-                throw new BaseException("Room không tồn tại");
-            }
-
-            simpMessagingTemplate.convertAndSend(
-                    Destinations.userMessage(roomEntity.getAdminId()),
-                    Destinations.sendData(type, payload));
-            List<AccountEntity> listUser = roomEntity.getConnectedUsers();
-            if (listUser != null) {
-                for (int i = 0; i < listUser.size(); i++) {
-                    simpMessagingTemplate.convertAndSend(
-                            Destinations.userMessage(listUser.get(i).getId()),
-                            Destinations.sendData(type, payload));
-                }
-            }
-        }
-    }
-
     private void sendMessage(Long userId, Map<String, Object> sendDto) {
         simpMessagingTemplate.convertAndSend(
-                Destinations.userMessage(userId), sendDto);
+                Destinations.userPack(userId), sendDto);
 
     }
 
     private void sendMessage(List<Long> userIds, Map<String, Object> sendDto) {
         for (int i = 0; i < userIds.size(); i++) {
             simpMessagingTemplate.convertAndSend(
-                    Destinations.userMessage(userIds.get(i)), sendDto);
+                    Destinations.userPack(userIds.get(i)), sendDto);
         }
     }
 
     @Override
-    public void subscribe(Map<String, Object> body) {
-        String userId = body.get("userId").toString();
-        simpMessagingTemplate.convertAndSend(Destinations
-                .userMessage(userId), "subcribe success");
-//        subscribe(body);
-    }
-
-    @Override
-    public void subscribe(Long userId) {
-
-        simpMessagingTemplate.convertAndSend(Destinations
-                .userMessage(userId), "subcribe success");
-//        subscribe(body);
-    }
-
-    @Override
     public void listRoom(Long userId) {
-        List<RoomDTO> roomDTOList = getRepository()
+        List<RoomDTO> roomDTOList = roomRepository
                 .listRoomByUserId(userId)
                 .stream().map(this::mapToDTO)
                 .collect(Collectors.toList());
-        simpMessagingTemplate.convertAndSend(Destinations
-                .userMessage(userId), Destinations.sendData("listRoom", roomDTOList));
-//        subscribe(body);
+        packService.sendToUser(userId, PackEnum.LIST_ROOM, roomDTOList);
     }
 
     @Override
-    protected void specificMapToDTO(RoomEntity entity, RoomDTO dto) {
-        super.specificMapToDTO(entity, dto);
+    public RoomDTO mapToDTO(RoomEntity entity) {
+        RoomDTO dto = super.mapToDTO(entity);
 
         if (dto.getLastMessageId() != null) {
-            LastSeenEntity lastSeenEntity = lastSeenRepository
+            MessageEntity messageEntity = messageRepository
                     .findById(dto.getLastMessageId()).orElse(null);
-            if (lastSeenEntity != null) {
-                dto.setLastMessage(lastSeenEntity);
+            if (messageEntity != null) {
+                dto.setLastMessage(messageService.mapToDTO(messageEntity));
             }
         }
         if (entity.getAdminId() != null) {
@@ -219,5 +147,6 @@ public class RoomServiceImpl extends AbstractBaseService<RoomEntity, RoomDTO, Ro
             ).orElse(null);
             dto.setAdmin(accountEntity);
         }
+        return dto;
     }
 }

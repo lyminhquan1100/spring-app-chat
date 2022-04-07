@@ -1,11 +1,10 @@
 package spring.boot.module.chat.dto;
 
-import com.google.common.base.Strings;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import spring.boot.core.dto.BaseDTO;
+import spring.boot.core.api.CoreDTO;
 
 import java.util.List;
 
@@ -13,7 +12,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MessageDTO extends BaseDTO {
+public class MessageDTO extends CoreDTO {
     private Long id;
 
     private Long fromId;
@@ -22,9 +21,17 @@ public class MessageDTO extends BaseDTO {
 
     private String content;
 
+    /**
+     * 1: message
+     * 2: image
+     */
+    private Short type;
+
     private String fullName;
 
     private String avatar;
 
     private List<LastSeenDTO> listLastSeen;
+
+    private List<EmojiDTO> listEmoji;
 }

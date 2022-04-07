@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import spring.boot.core.dto.BaseDTO;
+import spring.boot.core.api.CoreDTO;
 import spring.boot.module.auth.dto.AccountDTO;
 
 import java.util.List;
@@ -14,7 +14,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class RoomDTO extends BaseDTO {
+public class RoomDTO extends CoreDTO {
     private Long id;
 
     private Boolean active;
@@ -25,7 +25,7 @@ public class RoomDTO extends BaseDTO {
 
     private Long lastMessageId;
 
-    private Object lastMessage;
+    private MessageDTO lastMessage;
 
     private String avatar;
 

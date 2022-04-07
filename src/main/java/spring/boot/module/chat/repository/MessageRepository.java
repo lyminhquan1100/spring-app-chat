@@ -4,14 +4,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-import spring.boot.core.dao.repository.BaseRepository;
+import spring.boot.core.api.CoreRepository;
 import spring.boot.module.chat.dto.MessageDTO;
 import spring.boot.module.chat.entity.MessageEntity;
 
 import java.util.List;
 
 @Repository
-public interface MessageRepository extends BaseRepository<MessageEntity, MessageDTO, Long> {
+public interface MessageRepository extends CoreRepository<MessageDTO, MessageEntity> {
     @Override
     @Query("select e from MessageEntity e" +
             " where (lower(e.content) like %:#{#dto.content}% or :#{#dto.content} is null)" +
@@ -20,5 +20,5 @@ public interface MessageRepository extends BaseRepository<MessageEntity, Message
             " and (e.createdBy = :#{#dto.createdBy} or :#{#dto.createdBy} is null) ")
     Page<MessageEntity> search(MessageDTO dto, Pageable pageable);
 
-    List<MessageEntity> findAllByCreatedByAndRoomId(Long createdBy,Long roomId);
+    List<MessageEntity> findAllByCreatedByAndRoomId(Long createdBy, Long roomId);
 }

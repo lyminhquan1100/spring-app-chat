@@ -1,14 +1,18 @@
 package spring.boot.module.auth.service;
 
-import spring.boot.core.config.dto.UsernameAndPasswordDTO;
-import spring.boot.core.service.BaseService;
+import org.springframework.web.multipart.MultipartFile;
+import spring.boot.core.api.CoreService;
+import spring.boot.core.security.dto.UsernameAndPasswordDTO;
 import spring.boot.module.auth.dto.AccountDTO;
+import spring.boot.module.auth.dto.LoginDTO;
 import spring.boot.module.auth.entity.AccountEntity;
 
 import java.util.Map;
 
-public interface AccountService extends BaseService<AccountDTO> {
-    Map<String,Object> login(UsernameAndPasswordDTO dto);
+public interface AccountService extends CoreService<AccountDTO,AccountEntity> {
+    Map<String,Object> login(LoginDTO dto);
+
+    Boolean verifyUser(String username,String password);
 
     AccountDTO register(AccountDTO account);
 
@@ -16,9 +20,5 @@ public interface AccountService extends BaseService<AccountDTO> {
 
     Long getCurrentUserId();
 
-    AccountEntity mapToEntity(AccountDTO accountDTO);
-
-    AccountDTO mapToDTO(AccountEntity accountEntity);
-
-    AccountDTO changeAvatar(AccountDTO accountDTO);
+    AccountDTO changeAvatar(MultipartFile file);
 }
