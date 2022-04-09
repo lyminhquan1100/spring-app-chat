@@ -42,8 +42,6 @@ public class WebSocketEventListener {
         Authentication authentication = jwtProvider.getAuthentication(token);
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
 
-        deviceInfoService.checkLogoutDevice(userPrincipal.getDeviceInfoId());
-
         if (headers.getSessionAttributes() != null) {
             headers.getSessionAttributes().put("userId", userPrincipal.getId());
             headers.getSessionAttributes().put("deviceInfoId", userPrincipal.getDeviceInfoId());

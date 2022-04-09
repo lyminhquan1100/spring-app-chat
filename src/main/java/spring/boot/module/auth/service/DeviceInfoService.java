@@ -9,5 +9,5 @@ import spring.boot.module.auth.entity.DeviceInfoEntity;
 public interface DeviceInfoService extends CoreService<DeviceInfoDTO, DeviceInfoEntity> {
     void logoutDevice(Long id, LoginDTO loginDTO, SimpMessageHeaderAccessor headerAccessor);
     void updateCoords(Long id, DeviceInfoDTO deviceInfoDTO);
-    void checkLogoutDevice(Long id);
+    Boolean checkLogoutDevice(Long id);
 }

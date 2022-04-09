@@ -23,12 +23,12 @@ public class CoreDTO {
     @ApiModelProperty(hidden = true)
 //  @JsonDeserialize(using = LocalDateTimeDeserializer.class)
 //  @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private ZonedDateTime createdAt;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @ApiModelProperty(hidden = true)
-    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private ZonedDateTime updatedAt;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)

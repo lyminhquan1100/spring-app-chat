@@ -41,8 +41,8 @@ public class DeviceInfoServiceImpl
         }
         if (deviceInfo != null) {
             deviceInfoService.delete(id);
+            packService.sendBackCurrentDevice(headerAccessor, PackEnum.SUCCESS_LOGOUT, deviceInfo);
             packService.sendToDevice(deviceInfo.getId(), PackEnum.LOGOUT_DEVICE, null);
-            packService.sendBackCurrentDevice(headerAccessor, PackEnum.SUCCESS_LOGOUT, null);
         }
     }
 
@@ -58,9 +58,7 @@ public class DeviceInfoServiceImpl
     }
 
     @Override
-    public void checkLogoutDevice(Long id) {
-        if (!getRepository().existsById(id)) {
-            packService.sendToDevice(id, PackEnum.LOGOUT_DEVICE, null);
-        }
+    public Boolean checkLogoutDevice(Long id) {
+        return !getRepository().existsById(id);
     }
 }
