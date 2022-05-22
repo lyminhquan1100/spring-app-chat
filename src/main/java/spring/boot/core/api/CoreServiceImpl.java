@@ -51,8 +51,7 @@ public class CoreServiceImpl<DTO extends CoreDTO, Entity extends CoreEntity>
         }
 
         entity = save(entity,dto);
-        getModelMapper().map(entity,dto);
-        return dto;
+        return mapToDTO(entity);
     }
 
     @Override
@@ -139,11 +138,11 @@ public class CoreServiceImpl<DTO extends CoreDTO, Entity extends CoreEntity>
     protected Entity save(Entity entity, DTO dto) {
         beforeSave(entity, dto);
 
-        getRepository().save(entity);
+        Entity e = getRepository().save(entity);
 
-        afterSave(entity, dto);
+        afterSave(e, dto);
 
-        return entity;
+        return e;
     }
 
     @Override

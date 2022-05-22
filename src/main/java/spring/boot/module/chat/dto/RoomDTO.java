@@ -36,4 +36,7 @@ public class RoomDTO extends CoreDTO {
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Long idNewUser;
+
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private List<Long> idAddUsers;
 }

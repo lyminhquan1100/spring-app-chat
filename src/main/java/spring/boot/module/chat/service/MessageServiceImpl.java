@@ -47,12 +47,12 @@ public class MessageServiceImpl
 
     @Override
     public void sendMessage(MessageDTO messageDTO) {
-        RoomEntity roomEntity = roomService.getById(messageDTO.getId());
-        save(messageDTO);
+        RoomEntity roomEntity = roomService.getById(messageDTO.getRoomId());
+        MessageDTO messDTO = save(messageDTO);
 
-        roomEntity.setLastMessageId(messageDTO.getId());
+        roomEntity.setLastMessageId(messDTO.getId());
         roomService.save(roomEntity);
 
-        packService.sendToRoom(roomEntity, PackEnum.CHAT, messageDTO);
+        packService.sendToRoom(roomEntity, PackEnum.CHAT, messDTO);
     }
 }

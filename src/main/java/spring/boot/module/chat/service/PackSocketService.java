@@ -30,6 +30,13 @@ public class PackSocketService implements PackService {
     }
 
     @Override
+    public void sendToUser(List<Long> userId, PackEnum type, Object data) {
+        for (Long id : userId) {
+            sendToUser(id, type, data);
+        }
+    }
+
+    @Override
     public void sendToDevice(Long deviceId, PackEnum type, Object payload) {
         simpMessagingTemplate.convertAndSend(
                 Destinations.devicePack(deviceId),

@@ -20,10 +20,19 @@ public class RoomController extends CoreController<RoomDTO, RoomEntity> {
                             @PathVariable(name = "roomId") Long roomId) {
         return response(roomService.join(userId, roomId));
     }
+
+    @PostMapping("/join/{roomId}")
+    public ResponseDTO joinMultiple(@PathVariable(name = "roomId") Long roomId,@RequestBody RoomDTO roomDTO) {
+        return response(roomService.join(roomId, roomDTO));
+    }
     @PostMapping("/leave/{roomId}/{userId}")
     public ResponseDTO leave(@PathVariable(name = "userId") Long userId,
                             @PathVariable(name = "roomId") Long roomId) {
         return response(roomService.leave(userId, roomId));
+    }
+    @PostMapping("/create")
+    public ResponseDTO createRoom(@RequestBody RoomDTO roomDTO) {
+        return response(roomService.create(roomDTO));
     }
 }
 

@@ -18,9 +18,7 @@ import spring.boot.module.chat.repository.MessageRepository;
 import spring.boot.module.chat.repository.RoomRepository;
 import spring.boot.module.chat.utils.Destinations;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -65,42 +63,54 @@ public class RoomServiceImpl extends CoreServiceImpl<RoomDTO, RoomEntity>
             throw new BaseException("Vui lòng nhập roomId");
         }
         RoomEntity roomEntity = getRepository().findById(roomId).orElse(null);
-        if (userId == roomEntity.getAdminId()) {
-            sendMessage(accountService.getCurrentUserId(), Destinations.sendData("warning", "Quản trị viên đã trong nhóm"));
-            return null;
-        }
-        for (int i = 0; i < roomEntity.getConnectedUsers().size(); i++) {
-            if (roomEntity.getConnectedUsers().get(i).getId() == userId) {
-                sendMessage(accountService.getCurrentUserId(), Destinations.sendData("warning", "Người dùng đang trong nhóm"));
-                return null;
-            }
-        }
         AccountEntity accountEntity = accountRepository.findById(userId).orElse(null);
-        if (roomEntity != null) {
-            if (isJoin) {
-                roomEntity.addUser(accountEntity);
-            } else {
-                roomEntity.removeUser(accountEntity);
-            }
-            RoomDTO roomDTO = new RoomDTO();
-            save(roomEntity, roomDTO);
-            if (roomEntity.getConnectedUsers() == null) {
-                List<AccountEntity> newList = new ArrayList<>();
-                roomEntity.setConnectedUsers(newList);
-            }
+        duplicateUser(roomEntity, accountEntity);
+
+        if (isJoin) {
+            roomEntity.addUser(accountEntity);
+        } else {
+            roomEntity.removeUser(accountEntity);
+        }
+        RoomDTO roomDTO = new RoomDTO();
+        save(roomEntity, roomDTO);
+        if (roomEntity.getConnectedUsers() == null) {
+            List<AccountEntity> newList = new ArrayList<>();
+            roomEntity.setConnectedUsers(newList);
+        }
 //            List<Long> userIds = roomEntity.getConnectedUsers()
 //                    .stream().map(e -> e.getId()).collect(Collectors.toList());
 //            userIds.add(roomEntity.getAdminId());
 //            SendDTO sendDTO = new SendDTO("addUser", accountEntity);
-            sendMessage(userId, Destinations.sendData("join", roomEntity));
+        sendMessage(userId, Destinations.sendData("join", roomEntity));
 //            sendMessage(userIds, Destinations.sendData("addUser", roomEntity));
-        }
         return mapToDTO(roomEntity);
     }
 
     @Override
     public RoomDTO join(Long userId, Long roomId) {
         return joinOrLeave(userId, roomId, true);
+    }
+
+    @Override
+    public RoomDTO join(Long roomId, RoomDTO roomDTO) {
+        List<Long> listUserId = roomDTO.getIdAddUsers();
+        if (listUserId == null || listUserId.isEmpty()) {
+            throw new BaseException("Chưa chọn người dùng");
+        }
+        RoomEntity roomEntity = getRepository().findById(roomId).orElse(null);
+        List<AccountEntity> accountEntityList = new ArrayList<>();
+        for (Long idUser : listUserId) {
+            AccountEntity accountEntity = accountRepository.findById(idUser).orElse(null);
+            duplicateUser(roomEntity, accountEntity);
+            accountEntityList.add(accountEntity);
+        }
+        for (AccountEntity accountEntity : accountEntityList) {
+            roomEntity.addUser(accountEntity);
+        }
+
+        RoomDTO room = mapToDTO(save(roomEntity, roomDTO));
+        packService.sendToUser(listUserId, PackEnum.JOIN, room);
+        return room;
     }
 
     @Override
@@ -131,6 +141,43 @@ public class RoomServiceImpl extends CoreServiceImpl<RoomDTO, RoomEntity>
     }
 
     @Override
+    public RoomDTO create(RoomDTO roomDTO) {
+        if (roomDTO.getIdAddUsers() == null) {
+            throw new BaseException("Chưa chọn danh sách người dùng");
+        }
+
+        Set<Long> idFilter = new HashSet<>();
+        idFilter.add(roomDTO.getAdminId());
+        idFilter.addAll(roomDTO.getIdAddUsers());
+        List<Long> listId = new ArrayList<>(idFilter);
+        List<RoomEntity> listRoom = null;
+        if (listId.size() == 1) {// chỉ có admin
+            listRoom = roomRepository.findByAdminId(roomDTO.getAdminId());
+            for (RoomEntity room : listRoom) {
+                if (room.getConnectedUsers().size() == 0) {
+                    return mapToDTO(room);
+                }
+            }
+        } else {
+            listRoom = roomRepository.findBylistUserConnect(listId);
+            for (RoomEntity room : listRoom) {
+                return mapToDTO(room);
+            }
+        }
+
+
+        idFilter.remove(roomDTO.getAdminId());
+        List<Long> listConnect = new ArrayList<>(idFilter);
+
+        roomDTO.setConnectedUsers(listConnect
+                .stream().map(e -> accountService.findById(e))
+                .collect(Collectors.toList()));
+        RoomDTO room = save(roomDTO);
+        packService.sendToUser(listConnect, PackEnum.JOIN, room);
+        return room;
+    }
+
+    @Override
     public RoomDTO mapToDTO(RoomEntity entity) {
         RoomDTO dto = super.mapToDTO(entity);
 
@@ -148,5 +195,26 @@ public class RoomServiceImpl extends CoreServiceImpl<RoomDTO, RoomEntity>
             dto.setAdmin(accountEntity);
         }
         return dto;
+    }
+
+    private void duplicateUser(RoomEntity roomEntity, AccountEntity accountEntity) {
+        if (roomEntity == null) {
+            throw new BaseException("Vui lòng nhập roomId");
+        }
+        if (accountEntity == null) {
+            throw new BaseException("Thông tin người dùng không chính xác");
+        }
+        if (accountEntity.getId().equals(roomEntity.getAdminId())) {
+//            sendMessage(accountService.getCurrentUserId(), Destinations.sendData("warning", "Quản trị viên đã trong nhóm"));
+            throw new BaseException("Quản trị viên đã trong nhóm");
+        }
+        if (roomEntity.getConnectedUsers() != null) {
+            for (int i = 0; i < roomEntity.getConnectedUsers().size(); i++) {
+                if (roomEntity.getConnectedUsers().get(i).getId().equals(accountEntity.getId())) {
+//                    sendMessage(accountService.getCurrentUserId(), Destinations.sendData("warning", "Người dùng đang trong nhóm"));
+                    throw new BaseException("Người dùng đang trong nhóm");
+                }
+            }
+        }
     }
 }

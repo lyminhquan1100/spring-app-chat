@@ -37,7 +37,7 @@ public class RoomEntity extends CoreEntity {
 //    @JoinColumn(name = "admin_id", insertable = false, updatable = false)
 //    private AccountEntity admin;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "room_user",
             joinColumns = @JoinColumn(name = "room_id", referencedColumnName = "id"),

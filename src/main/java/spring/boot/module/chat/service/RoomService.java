@@ -9,6 +9,10 @@ import java.util.Map;
 
 public interface RoomService extends CoreService<RoomDTO, RoomEntity> {
     RoomDTO join(Long userId, Long roomId);
+
+    RoomDTO join(Long roomId, RoomDTO roomDTO);
     RoomDTO leave(Long userId, Long roomId);
     void listRoom(Long userID);
+
+    RoomDTO create(RoomDTO roomDTO);
 }
