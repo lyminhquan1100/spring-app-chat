@@ -23,7 +23,7 @@ public final class AuthenticationEntryPointHandle implements
     ResponseDTO response = new ResponseDTO(401,
         Message.getMessage("AuthenticationEntryPointImpl.invalidToken"));
 
-    ResponseUtil.writeResponse(HttpStatus.OK, httpServletResponse,
+    ResponseUtil.writeResponse(HttpStatus.UNAUTHORIZED, httpServletResponse,
         ResponseUtil.convertObjectToJson(response));
   }
 }

@@ -8,12 +8,16 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import spring.boot.core.exception.BaseException;
 import spring.boot.core.security.userdetail.Authority;
 import spring.boot.core.security.userdetail.UserPrincipal;
 
 import javax.crypto.SecretKey;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -67,7 +71,7 @@ public class JwtProvider {
 
         String jwt = jwtBuilder
                 .setIssuedAt(new Date())
-                .setExpiration(java.sql.Date.valueOf(LocalDate.now().plusDays(1)))
+                .setExpiration(Date.from(ZonedDateTime.now().plusDays(1).toInstant()))
                 .signWith(secretKey)
                 .compact();
 
@@ -99,13 +103,8 @@ public class JwtProvider {
         return additionalInformation;
     }
 
-    public UsernamePasswordAuthenticationToken getAuthentication(String token) {
-
-        JwtParser jwtParser = Jwts.parser().setSigningKey(secretKey);
-
-        Jws claimsJws = jwtParser.parseClaimsJws(token);
-
-        Claims claims = (Claims) claimsJws.getBody();
+    public UserDetails getAuthentication(String token) {
+        Claims claims = parseToken(token);
 
         Long id = Long.valueOf(claims.get("userId").toString());
         Long deviceInfoId = Long.valueOf(claims.get("deviceInfoId").toString());
@@ -125,7 +124,24 @@ public class JwtProvider {
         userDetails.setUsername(username);
         userDetails.setAuthorities(authorities);
         userDetails.setDeviceInfoId(deviceInfoId);
-        return new UsernamePasswordAuthenticationToken(userDetails, "", authorities);
+        return userDetails;
+    }
+
+    private Claims parseToken(String token) {
+        try{
+            return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
+        } catch (SignatureException e) {
+            throw new BaseException(401,"Invalid JWT signature: {}");
+        } catch (MalformedJwtException e) {
+            throw new BaseException(401,"Invalid JWT token: {}");
+        } catch (ExpiredJwtException e) {
+            throw new BaseException(401,"JWT token đã hết hạn");
+        } catch (UnsupportedJwtException e) {
+            throw new BaseException(401,"JWT token is unsupported");
+        } catch (IllegalArgumentException e) {
+            throw new BaseException(401,"JWT claims string is empty");
+        }
+
     }
 
     @Getter

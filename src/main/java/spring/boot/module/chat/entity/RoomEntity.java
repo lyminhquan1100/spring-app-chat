@@ -29,9 +29,9 @@ public class RoomEntity extends CoreEntity {
     @Column(name = "last_message_id")
     private Long lastMessageId;
 
-//    @OneToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "last_message_id",updatable = false,insertable = false)
-//    private MessageEntity lastMessage;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "last_message_id",updatable = false,insertable = false)
+    private MessageEntity lastMessageEntity;
 
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "admin_id", insertable = false, updatable = false)

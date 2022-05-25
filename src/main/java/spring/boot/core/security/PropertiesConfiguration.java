@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 @NoArgsConstructor
 @Component
 public class PropertiesConfiguration {
-  private final String secretKey = "spring-security-library-manager-token-private-key";
+  private final String secretKey = "spring-security-jwt-token-private-key";
   private final String tokenPrefix= "Bearer";
   private final String authorizationHeader="Authorization";
 }

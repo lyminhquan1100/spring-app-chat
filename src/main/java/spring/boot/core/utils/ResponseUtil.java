@@ -14,7 +14,7 @@ public final class ResponseUtil {
       throws IOException {
     response.setContentType("application/json;charset=UTF-8");
     response.setStatus(httpStatus.value());
-    response.getWriter().write(responseMsg.toString());
+    response.getWriter().write(convertObjectToJson(responseMsg));
   }
 
   public static String convertObjectToJson(Object object) throws JsonProcessingException {

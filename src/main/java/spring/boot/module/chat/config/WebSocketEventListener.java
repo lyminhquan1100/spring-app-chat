@@ -39,8 +39,7 @@ public class WebSocketEventListener {
                 headerSimp.getMessageHeaders().get("simpConnectMessage", Message.class));
 
         String token = headers.getNativeHeader("token").get(0);
-        Authentication authentication = jwtProvider.getAuthentication(token);
-        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+        UserPrincipal userPrincipal = (UserPrincipal) jwtProvider.getAuthentication(token);
 
         if (headers.getSessionAttributes() != null) {
             headers.getSessionAttributes().put("userId", userPrincipal.getId());

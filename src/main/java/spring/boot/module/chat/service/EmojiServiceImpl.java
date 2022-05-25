@@ -39,8 +39,8 @@ public class EmojiServiceImpl extends CoreServiceImpl<EmojiDTO, EmojiEntity> imp
             repository.delete(entity);
             packService.sendToRoom(emojiDTO.getRoomId(), PackEnum.EMOJI_REMOVE, emojiDTO);
         } else {
-            save(emojiDTO);
-            packService.sendToRoom(emojiDTO.getRoomId(), PackEnum.EMOJI_REMOVE, emojiDTO);
+            EmojiDTO dto = save(emojiDTO);
+            packService.sendToRoom(emojiDTO.getRoomId(), PackEnum.EMOJI, dto);
         }
     }
 

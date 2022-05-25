@@ -41,12 +41,12 @@ public class LastSeenServiceImpl
                 return;
             }
             lastSeenEntity.setMessageId(messageId);
-            getRepository().save(lastSeenEntity);
+            lastSeenEntity = getRepository().save(lastSeenEntity);
         } else {
             lastSeenEntity = new LastSeenEntity();
             lastSeenEntity.setUserId(userId);
             lastSeenEntity.setMessageId(messageId);
-            getRepository().save(lastSeenEntity);
+            lastSeenEntity = getRepository().save(lastSeenEntity);
         }
         packService.sendToRoom(roomId, PackEnum.LAST_SEEN, mapToDTO(lastSeenEntity));
     }

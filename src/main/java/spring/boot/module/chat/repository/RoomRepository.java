@@ -24,7 +24,7 @@ public interface RoomRepository extends CoreRepository<RoomDTO,RoomEntity> {
             " and (exists(select u from e.connectedUsers u" +
             "                   where u.id = :#{#userId})" +
             "       or :#{#userId} = e.adminId or :#{#userId} is null)" +
-            " order by e.updatedAt ASC")
+            " order by e.updatedAt DESC")
     List<RoomEntity> listRoomByUserId(Long userId);
 
     @Query(value = "select e from RoomEntity e" +

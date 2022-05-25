@@ -45,13 +45,12 @@ public class Config extends WebSecurityConfigurerAdapter {
         for (String s : unAuthorization)
             System.out.println(s);
 
-        http.csrf().disable()
-                .cors()
+        http.cors()
+                .and().csrf().disable()
+                .exceptionHandling().authenticationEntryPoint(authenticationEntryPointHandle)
                 .and()
                 .addFilterBefore(new JwtFilter(secretKey), UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling().accessDeniedHandler(accessDeniedHandle)
-                .and()
-                .exceptionHandling().authenticationEntryPoint(authenticationEntryPointHandle)
                 .and()
                 .authorizeRequests()
                 .antMatchers(HttpMethod.PUT, unAuthorization).permitAll()
