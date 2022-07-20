@@ -7,7 +7,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import spring.boot.core.api.CoreServiceImpl;
-import spring.boot.core.security.dto.UsernameAndPasswordDTO;
 import spring.boot.core.security.filter.JwtProvider;
 import spring.boot.core.security.filter.JwtProvider.JwtTokenProperties;
 import spring.boot.core.security.userdetail.UserPrincipal;

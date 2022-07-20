@@ -1,9 +1,7 @@
 package spring.boot.module.auth.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import spring.boot.core.security.dto.UsernameAndPasswordDTO;
 import spring.boot.core.api.CoreController;
 import spring.boot.core.api.ResponseDTO;
 import spring.boot.module.auth.dto.AccountDTO;
@@ -16,10 +14,10 @@ import javax.servlet.http.HttpServletRequest;
 @RestController
 @RequestMapping("/account")
 @CrossOrigin
-public class AccountController extends CoreController<AccountDTO, AccountEntity> {
-
-    @Autowired
-    private AccountService service;
+public class AccountController extends CoreController<AccountDTO, AccountEntity,AccountService> {
+    public AccountController(AccountService s) {
+        super(s);
+    }
 
     @PostMapping("/register")
     public ResponseDTO register(@RequestBody AccountDTO accountDTO) {

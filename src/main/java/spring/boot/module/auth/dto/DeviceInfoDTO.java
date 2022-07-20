@@ -6,8 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import spring.boot.core.api.CoreDTO;
 
-import javax.persistence.Column;
-
 @Getter
 @Setter
 @NoArgsConstructor

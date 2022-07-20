@@ -3,7 +3,6 @@ package spring.boot.module.chat.repository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import spring.boot.core.api.CoreRepository;
-import spring.boot.module.auth.entity.AccountEntity;
 import spring.boot.module.chat.dto.RoomDTO;
 import spring.boot.module.chat.entity.RoomEntity;
 

@@ -3,7 +3,6 @@ package spring.boot.module.chat.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import spring.boot.core.api.CoreServiceImpl;
-import spring.boot.core.exception.BaseException;
 import spring.boot.module.auth.entity.AccountEntity;
 import spring.boot.module.auth.repository.AccountRepository;
 import spring.boot.module.chat.dto.MessageDTO;

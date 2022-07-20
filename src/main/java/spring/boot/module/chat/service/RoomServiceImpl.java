@@ -8,7 +8,6 @@ import spring.boot.core.exception.BaseException;
 import spring.boot.module.auth.entity.AccountEntity;
 import spring.boot.module.auth.repository.AccountRepository;
 import spring.boot.module.auth.service.AccountService;
-import spring.boot.module.chat.dto.MessageDTO;
 import spring.boot.module.chat.dto.RoomDTO;
 import spring.boot.module.chat.entity.MessageEntity;
 import spring.boot.module.chat.entity.RoomEntity;

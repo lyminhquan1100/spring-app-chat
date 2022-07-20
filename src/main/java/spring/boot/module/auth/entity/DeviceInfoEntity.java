@@ -3,7 +3,6 @@ package spring.boot.module.auth.entity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.checkerframework.checker.units.qual.C;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
